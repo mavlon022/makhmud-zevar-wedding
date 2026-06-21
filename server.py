@@ -12,6 +12,7 @@ from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parent
 DATA_FILE = Path(os.environ.get("RSVP_DATA_FILE", ROOT / "rsvps.json"))
+FALLBACK_DATA_FILE = Path(os.environ.get("TMPDIR", "/tmp")) / "makhmud-zevar-rsvps.json"
 ADMIN_CODE = os.environ.get("ADMIN_CODE", "MZ2026")
 
 
@@ -65,8 +66,7 @@ class WeddingHandler(SimpleHTTPRequestHandler):
 
         items = load_rsvps()
         items.append(entry)
-        DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
-        DATA_FILE.write_text(json.dumps(items, ensure_ascii=False, indent=2), encoding="utf-8")
+        save_rsvps(items)
         self.send_json({"ok": True, "entry": entry})
 
     def send_json(self, data):
@@ -99,12 +99,26 @@ class WeddingHandler(SimpleHTTPRequestHandler):
 
 
 def load_rsvps():
-    if not DATA_FILE.exists():
-        return []
-    try:
-        return json.loads(DATA_FILE.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        return []
+    for path in (DATA_FILE, FALLBACK_DATA_FILE):
+        if not path.exists():
+            continue
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+    return []
+
+
+def save_rsvps(items):
+    body = json.dumps(items, ensure_ascii=False, indent=2)
+    for path in (DATA_FILE, FALLBACK_DATA_FILE):
+        try:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(body, encoding="utf-8")
+            return
+        except OSError:
+            continue
+    raise OSError("Could not write RSVP data")
 
 
 if __name__ == "__main__":
