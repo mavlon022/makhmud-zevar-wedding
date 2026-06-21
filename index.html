@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Махмуд и Зевар | 8 августа 2026</title>
+    <meta
+      name="description"
+      content="Свадебное приглашение Махмуда и Зевар в ресторане Javonon 8 августа 2026 года."
+    >
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main>
+      <section class="cover" aria-labelledby="invitation-title">
+        <div class="cover-photo">
+          <img src="wedding-couple-bright.png" alt="Светлая свадебная фотография жениха и невесты">
+        </div>
+
+        <p class="kicker">Свадебное торжество</p>
+        <h1 id="invitation-title">
+          <span>Махмуд</span>
+          <span class="amp">&</span>
+          <span>Зевар</span>
+        </h1>
+        <p class="date-line">08 . 08 . 2026</p>
+        <a class="ghost-link" href="#rsvp">Подтвердить участие</a>
+      </section>
+
+      <section class="invitation" aria-labelledby="dear-guest">
+        <p class="ornament">M & Z</p>
+        <h2 id="dear-guest">Дорогой гость</h2>
+        <p>
+          Мы будем счастливы видеть вас на нашем свадебном торжестве.
+          Приглашаем разделить с нами этот особенный вечер любви, семьи и радости.
+        </p>
+      </section>
+
+      <section class="schedule" aria-label="Детали свадьбы">
+        <div class="detail">
+          <span>Дата</span>
+          <strong>Суббота, 8 августа 2026</strong>
+        </div>
+        <div class="detail">
+          <span>Время</span>
+          <strong>18:00</strong>
+        </div>
+        <div class="detail">
+          <span>Место</span>
+          <strong>Ресторан Javonon</strong>
+        </div>
+      </section>
+
+      <section class="countdown-section" aria-labelledby="countdown-title">
+        <p class="kicker">До торжества</p>
+        <h2 id="countdown-title">Осталось</h2>
+        <div class="countdown" id="countdown">
+          <div><strong id="days">00</strong><span>дней</span></div>
+          <div><strong id="hours">00</strong><span>часов</span></div>
+          <div><strong id="minutes">00</strong><span>минут</span></div>
+          <div><strong id="seconds">00</strong><span>секунд</span></div>
+        </div>
+      </section>
+
+      <section class="rsvp-section" id="rsvp" aria-labelledby="rsvp-title">
+        <p class="kicker">RSVP</p>
+        <h2 id="rsvp-title">Вы придете?</h2>
+        <p class="rsvp-intro">
+          Пожалуйста, подтвердите участие до 25 июля 2026 года, чтобы мы могли подготовить для вас красивый вечер.
+        </p>
+
+        <form class="rsvp-form" id="rsvpForm">
+          <label>
+            Имя и фамилия
+            <input type="text" name="guestName" placeholder="Ваше имя и фамилия" required>
+          </label>
+
+          <label>
+            Участие
+            <select name="attendance" required>
+              <option value="">Буду / не буду</option>
+              <option value="Coming">Обязательно приду</option>
+              <option value="Not coming">К сожалению, не смогу прийти</option>
+            </select>
+          </label>
+
+          <label>
+            Сообщение
+            <textarea name="message" rows="3" placeholder="Ваше сообщение или пожелание"></textarea>
+          </label>
+
+          <button type="submit">Подтвердить</button>
+        </form>
+
+        <div class="confirmation" id="confirmation" hidden aria-live="polite">
+          <h3>Спасибо за ваш ответ.</h3>
+          <p id="confirmationText"></p>
+          <a id="downloadRsvp" download="makhmud-zevar-invitation.txt">Скачать копию приглашения</a>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

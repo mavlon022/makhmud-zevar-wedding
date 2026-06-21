@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+rsvps.json
+*.log
+*.pid
+makhmud-zevar-permanent-site.zip

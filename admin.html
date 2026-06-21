@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Админ RSVP | Махмуд и Зевар</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="admin-main">
+      <section class="admin-header">
+        <p class="kicker">Панель администратора</p>
+        <h1>RSVP</h1>
+        <p>Ответы гостей на приглашение Махмуда и Зевар.</p>
+        <label class="admin-code-label">
+          Код администратора
+          <input id="adminCode" type="password" placeholder="Введите код">
+        </label>
+        <div class="admin-actions">
+          <a class="ghost-link" href="/">Открыть приглашение</a>
+          <button id="downloadCsv" type="button">Скачать CSV</button>
+          <button id="refreshAdmin" type="button">Обновить</button>
+        </div>
+      </section>
+
+      <section class="admin-summary" aria-label="Итоги RSVP">
+        <div>
+          <span>Всего</span>
+          <strong id="totalCount">0</strong>
+        </div>
+        <div>
+          <span>Придут</span>
+          <strong id="comingCount">0</strong>
+        </div>
+        <div>
+          <span>Не придут</span>
+          <strong id="notComingCount">0</strong>
+        </div>
+      </section>
+
+      <section class="admin-table-section">
+        <p class="admin-error" id="adminError" hidden></p>
+        <div class="admin-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Имя</th>
+                <th>Ответ</th>
+                <th>Сообщение</th>
+                <th>Дата ответа</th>
+              </tr>
+            </thead>
+            <tbody id="rsvpRows">
+              <tr>
+                <td colspan="4">Загрузка...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="admin.js"></script>
+  </body>
+</html>
