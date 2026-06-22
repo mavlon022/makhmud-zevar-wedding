@@ -20,6 +20,12 @@ class WeddingHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(ROOT), **kwargs)
 
+    def end_headers(self):
+        path = urlparse(self.path).path
+        if path.endswith((".css", ".js", ".webp", ".png", ".jpg", ".jpeg", ".ico", ".svg")):
+            self.send_header("Cache-Control", "public, max-age=604800")
+        super().end_headers()
+
     def do_GET(self):
         path = urlparse(self.path).path
         if path == "/api/rsvps":
