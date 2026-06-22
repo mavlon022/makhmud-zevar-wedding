@@ -34,6 +34,12 @@ class WeddingHandler(SimpleHTTPRequestHandler):
                 return
             self.send_csv(load_rsvps())
             return
+        if path == "/api/rsvps.txt":
+            if not self.is_admin_request():
+                self.send_error(HTTPStatus.UNAUTHORIZED, "Admin code required")
+                return
+            self.send_guest_list(load_rsvps())
+            return
         super().do_GET()
 
     def do_POST(self):
@@ -93,6 +99,33 @@ class WeddingHandler(SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def send_guest_list(self, items):
+        coming = [item for item in items if item.get("attendance") == "Coming"]
+        not_coming = [item for item in items if item.get("attendance") == "Not coming"]
+
+        lines = [
+            "Список гостей",
+            "Махмуд и Зевар",
+            "",
+            f"Всего ответов: {len(items)}",
+            f"Придут: {len(coming)}",
+            f"Не придут: {len(not_coming)}",
+            "",
+            "ПРИДУТ:",
+        ]
+
+        lines.extend(format_guest_line(item) for item in coming)
+        lines.extend(["", "НЕ ПРИДУТ:"])
+        lines.extend(format_guest_line(item) for item in not_coming)
+
+        body = "\n".join(lines).encode("utf-8-sig")
+        self.send_response(HTTPStatus.OK)
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.send_header("Content-Disposition", "attachment; filename=makhmud-zevar-guest-list.txt")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
     def is_admin_request(self):
         code = self.headers.get("X-Admin-Code", "")
         return code == ADMIN_CODE
@@ -119,6 +152,14 @@ def save_rsvps(items):
         except OSError:
             continue
     raise OSError("Could not write RSVP data")
+
+
+def format_guest_line(item):
+    name = item.get("guestName", "")
+    message = item.get("message", "")
+    created_at = item.get("createdAt", "")
+    extra = f" | {message}" if message else ""
+    return f"- {name}{extra} | {created_at}"
 
 
 if __name__ == "__main__":

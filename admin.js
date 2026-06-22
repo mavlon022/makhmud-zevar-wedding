@@ -5,6 +5,7 @@ const notComingCount = document.querySelector("#notComingCount");
 const adminError = document.querySelector("#adminError");
 const refreshButton = document.querySelector("#refreshAdmin");
 const downloadCsvButton = document.querySelector("#downloadCsv");
+const downloadGuestListButton = document.querySelector("#downloadGuestList");
 const adminCodeInput = document.querySelector("#adminCode");
 
 adminCodeInput.value = localStorage.getItem("weddingAdminCode") || "";
@@ -78,15 +79,23 @@ async function loadRsvps() {
 }
 
 async function downloadCsv() {
+  await downloadAdminFile("/api/rsvps.csv", "makhmud-zevar-rsvps.csv");
+}
+
+async function downloadGuestList() {
+  await downloadAdminFile("/api/rsvps.txt", "makhmud-zevar-guest-list.txt");
+}
+
+async function downloadAdminFile(urlPath, filename) {
   const code = adminCodeInput.value.trim();
   localStorage.setItem("weddingAdminCode", code);
 
-  const response = await fetch("/api/rsvps.csv", {
+  const response = await fetch(urlPath, {
     headers: { "X-Admin-Code": code }
   });
 
   if (!response.ok) {
-    adminError.textContent = "Не удалось скачать CSV. Проверьте код администратора.";
+    adminError.textContent = "Не удалось сохранить список. Проверьте код администратора.";
     adminError.hidden = false;
     return;
   }
@@ -95,11 +104,12 @@ async function downloadCsv() {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = "makhmud-zevar-rsvps.csv";
+  link.download = filename;
   link.click();
   URL.revokeObjectURL(url);
 }
 
 refreshButton.addEventListener("click", loadRsvps);
 downloadCsvButton.addEventListener("click", downloadCsv);
+downloadGuestListButton.addEventListener("click", downloadGuestList);
 loadRsvps();
