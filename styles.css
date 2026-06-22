@@ -206,6 +206,14 @@ h2 {
   line-height: 1.15;
 }
 
+.address {
+  display: block;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
 .countdown-section {
   background:
     radial-gradient(circle at 50% 0%, rgba(247, 215, 212, 0.56), transparent 18rem),
