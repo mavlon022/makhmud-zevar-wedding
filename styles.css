@@ -207,9 +207,11 @@ h2 {
 }
 
 .venue-name {
-  color: var(--gold);
-  font-weight: 800;
-  letter-spacing: 0.16em;
+  color: #111111;
+  font-size: clamp(2rem, 8vw, 3.2rem);
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  line-height: 1;
   text-transform: uppercase;
 }
 
