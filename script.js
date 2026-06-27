@@ -18,7 +18,7 @@ function makeInvitationText(data) {
     "",
     "Дата: суббота, 8 августа 2026",
     "Время: 18:00",
-    "Место: Javonon",
+    "Место: JAVONON",
     "Суроға: кӯчаи Абдулаҳад Қаҳҳоров 65, Душанбе",
     "",
     `Ваш ответ: ${attendanceLabel(data.attendance)}`,
