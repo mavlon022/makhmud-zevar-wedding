@@ -3,6 +3,7 @@ const totalCount = document.querySelector("#totalCount");
 const comingCount = document.querySelector("#comingCount");
 const notComingCount = document.querySelector("#notComingCount");
 const adminError = document.querySelector("#adminError");
+const storageStatus = document.querySelector("#storageStatus");
 const refreshButton = document.querySelector("#refreshAdmin");
 const downloadCsvButton = document.querySelector("#downloadCsv");
 const downloadGuestListButton = document.querySelector("#downloadGuestList");
@@ -58,11 +59,14 @@ function renderRsvps(items) {
 
 async function loadRsvps() {
   adminError.hidden = true;
+  storageStatus.hidden = true;
   refreshButton.disabled = true;
 
   try {
     const code = adminCodeInput.value.trim();
     localStorage.setItem("weddingAdminCode", code);
+
+    await loadStorageStatus(code);
 
     const response = await fetch("/api/rsvps", {
       headers: { "X-Admin-Code": code }
@@ -76,6 +80,21 @@ async function loadRsvps() {
   } finally {
     refreshButton.disabled = false;
   }
+}
+
+async function loadStorageStatus(code) {
+  const response = await fetch("/api/storage", {
+    headers: { "X-Admin-Code": code }
+  });
+
+  if (!response.ok) return;
+
+  const status = await response.json();
+  storageStatus.textContent = status.persistent
+    ? "Storage OK: guest list is using persistent storage."
+    : "Warning: guest list is using temporary storage and may erase after Render restarts. Add a Render disk mounted at /var/data.";
+  storageStatus.classList.toggle("is-persistent", status.persistent);
+  storageStatus.hidden = false;
 }
 
 async function downloadCsv() {

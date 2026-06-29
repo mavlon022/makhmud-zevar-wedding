@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import json
 import os
+import tempfile
 from datetime import datetime, timezone
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -11,7 +12,8 @@ from urllib.parse import urlparse
 
 
 ROOT = Path(__file__).resolve().parent
-DATA_FILE = Path(os.environ.get("RSVP_DATA_FILE", ROOT / "rsvps.json"))
+DEFAULT_DATA_FILE = Path("/var/data/rsvps.json") if os.environ.get("PORT") else ROOT / "rsvps.json"
+DATA_FILE = Path(os.environ.get("RSVP_DATA_FILE", DEFAULT_DATA_FILE))
 FALLBACK_DATA_FILE = Path(os.environ.get("TMPDIR", "/tmp")) / "makhmud-zevar-rsvps.json"
 ADMIN_CODE = os.environ.get("ADMIN_CODE", "MZ2026")
 
@@ -45,6 +47,12 @@ class WeddingHandler(SimpleHTTPRequestHandler):
                 self.send_error(HTTPStatus.UNAUTHORIZED, "Admin code required")
                 return
             self.send_guest_list(load_rsvps())
+            return
+        if path == "/api/storage":
+            if not self.is_admin_request():
+                self.send_error(HTTPStatus.UNAUTHORIZED, "Admin code required")
+                return
+            self.send_json(storage_status())
             return
         super().do_GET()
 
@@ -158,6 +166,34 @@ def save_rsvps(items):
         except OSError:
             continue
     raise OSError("Could not write RSVP data")
+
+
+def active_data_file():
+    for path in (DATA_FILE, FALLBACK_DATA_FILE):
+        if path.exists():
+            return path
+    return DATA_FILE
+
+
+def is_relative_to(path, parent):
+    try:
+        path.resolve().relative_to(parent.resolve())
+        return True
+    except ValueError:
+        return False
+
+
+def storage_status():
+    active = active_data_file()
+    temp_dir = Path(tempfile.gettempdir())
+    volatile = is_relative_to(active, temp_dir) or is_relative_to(active, ROOT)
+    return {
+        "activeFile": str(active),
+        "primaryFile": str(DATA_FILE),
+        "fallbackFile": str(FALLBACK_DATA_FILE),
+        "persistent": not volatile,
+        "message": "persistent storage active" if not volatile else "temporary storage: add a Render persistent disk mounted at /var/data",
+    }
 
 
 def format_guest_line(item):

@@ -490,3 +490,15 @@ td {
   background: rgba(155, 76, 74, 0.12);
   color: #9b4c4a;
 }
+
+.admin-storage {
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(184, 138, 70, 0.14);
+  color: #7d5520;
+}
+
+.admin-storage.is-persistent {
+  background: rgba(138, 163, 132, 0.2);
+  color: var(--sage-deep);
+}
